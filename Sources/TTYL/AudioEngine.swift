@@ -33,11 +33,6 @@ class AudioEngine: NSObject {
 	}
 	
 	func play(tone freq: Frequency) {
-		var buf: Array<CChar> = []
-		for i in 0...500 {
-			buf.append(CChar(LowTone.`2`.freq.wave(x: Double(i))))
-		}
-		
 		let audioBuffer = AudioBuffer(
 			mNumberChannels: UInt32(2),
 			mDataByteSize: UInt32(500),
@@ -111,6 +106,10 @@ class AudioEngine: NSObject {
 		}
 		
 		//setup callbacks
+		var renderCallback: AURenderCallbackStruct(
+			inputProc: outputRenderCallback,
+			inputProcRefCon: Unmanaged.passUnretained(self).toOpaque()
+		)
 		let setupStatus = AudioUnitSetProperty(
 			audioUnit,
 			kAudioUnitProperty_SetRenderCallback,
@@ -142,5 +141,39 @@ class AudioEngine: NSObject {
 		}
 	}
 	
-	func 
+	let outputRenderCallback: AURenderCallback = { (
+		inRefCon,
+		ioActionFlags,
+		inTimeStamp,
+		inBusNumber,
+		inNumberFrames,
+		ioData
+	) in
+		let manager = Unmanaged<AudioEngine>.fromOpaque(inRefCon).takeUnretainedValue()
+		
+		//for when we r behind
+//		for i in 0..<Int(ioData!.pointee.mNumberBuffers) {
+//			memset(
+//				ioData!.pointee.mBuffers.mData,
+//				0,
+//				Int(ioData!.pointee.mBuffers.mDataByteSize)
+//			)
+//		}
+//		return noErr
+		
+		var buf: Array<Int16> = []
+		for i in 0...500 {
+			buf.append(Int16(LowTone.`2`.freq.wave(x: Double(i))))
+		}
+		
+//		var availableBytes: UInt32 = 0
+		let sourceBuffer = buf
+		
+		let amount = min(ioData!.pointee.mBuffers.mDataByteSize, buf.count)
+		
+		//copy audio from our circ buffer to audio unit's buffer
+		memcpy(ioData!.pointee.mBuffers.mData, sourceBuffer, Int(amount))
+		
+		return noErr
+	}
 }
