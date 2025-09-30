@@ -6,4 +6,4 @@ Description: An awesome Orion tweak!
 Maintainer: neon443
 Author: neon443
 Section: Tweaks
-Depends: ${ORION}, firmware (>= 12.2)
+Depends: ${ORION}, firmware (>= 12.2) | ${LIBSWIFT}
