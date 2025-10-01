@@ -6,8 +6,34 @@
 //
 
 enum NumberTones {
+	static let arr: [[[Int]]] = [
+		[[1], [2], [3]],
+		[[4], [5], [6]],
+		[[7], [8], [9]],
+		[[0], [0], [0]]
+	]
 	static func tone(number: Int, x: Double) -> Double {
-		return HighTone.0.freq.wave(x: x) + LowTone.0.freq.wave(x: x)
+		var hi: Int = 0
+		var low: Int = 0
+		if number == 0 { hi = 1; low = 3 }
+		if number < 4 {
+			low = 0
+			hi = number - 1
+		}
+		
+		if number < 7 {
+			low = 1
+			hi = number - 4
+		}
+		if number < 10 {
+			low = 2
+			hi = number - 7
+		}
+		
+		let highTone = HighTone(rawValue: hi)?.freq.wave(x: x) ?? HighTone.`0`.freq.wave(x: x)
+		let lowTone = LowTone(rawValue: hi)?.freq.wave(x: x) ?? LowTone.`0`.freq.wave(x: x)
+		
+		return highTone + lowTone
 	}
 }
 
