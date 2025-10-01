@@ -31,7 +31,7 @@ enum NumberTones {
 		}
 		
 		let highTone = HighTone(rawValue: hi)?.freq.wave(x: x) ?? HighTone.`0`.freq.wave(x: x)
-		let lowTone = LowTone(rawValue: hi)?.freq.wave(x: x) ?? LowTone.`0`.freq.wave(x: x)
+		let lowTone = LowTone(rawValue: low)?.freq.wave(x: x) ?? LowTone.`0`.freq.wave(x: x)
 		
 		return highTone + lowTone
 	}
