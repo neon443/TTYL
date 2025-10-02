@@ -4,25 +4,28 @@ import TTYLC
 import UIKit
 import AudioToolbox
 
-class xhook: ClassHook<UIViewController> {
+class DialerHook: ClassHook<UIViewController> {
 	static var targetName: String { "PHInCallKeypadViewController" }
+	
+	var timer: Timer?
 	
 	func viewDidLoad() {
 		orig.viewDidLoad()
 		
-		DispatchQueue.main.asyncAfter(deadline: .now()+1) {
-			let l = UILabel()
-			l.textColor = .black
-			l.frame = CGRect(x: 100, y: 100, width: 100, height: 100)
-			l.text = ""
-			self.target.view.addSubview(l)
-			self.target.view.bringSubviewToFront(l)
+		timer = Timer(timeInterval: 0.1, repeats: true) { timer in
+			NSLog("TTYLnslog")
 		}
 		
-		AudioServicesPlayAlertSoundWithCompletion(1103) {
-			AudioServicesPlayAlertSoundWithCompletion(1103) {
-				AudioServicesPlayAlertSound(1103)
-			}
+		DispatchQueue.main.asyncAfter(deadline: .now()) {
+			RunLoop.main.add(self.timer!, forMode: .default)
+			
+			let tbox = UITextField()
+			tbox.autocapitalizationType = .none
+			tbox.autocorrectionType = .no
+			tbox.borderStyle = .bezel
+			tbox.frame = CGRect(x: 100, y: 100, width: 100, height: 100)
+			self.target.view.addSubview(tbox)
+			self.target.view.bringSubviewToFront(tbox)
 		}
 	}
 }
