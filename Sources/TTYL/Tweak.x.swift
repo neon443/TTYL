@@ -3,29 +3,15 @@ import Orion
 import TTYLC
 import UIKit
 import AudioToolbox
+import Darwin
 
-class DialerHook: ClassHook<UIViewController> {
-	static var targetName: String { "PHInCallKeypadViewController" }
+class TelephonyHook: ClassHook<NSObject> {
+	static var targetName: String { "CXCallUpdate" }
+	static var subclassMode: SubclassMode = .createSubclassNamed("CXCallUpdate")
 	
-	var timer: Timer?
-	
-	func viewDidLoad() {
-		orig.viewDidLoad()
-		
-		timer = Timer(timeInterval: 0.1, repeats: true) { timer in
-			NSLog("TTYLnslog")
-		}
-		
-		DispatchQueue.main.asyncAfter(deadline: .now()) {
-			RunLoop.main.add(self.timer!, forMode: .default)
-			
-			let tbox = UITextField()
-			tbox.autocapitalizationType = .none
-			tbox.autocorrectionType = .no
-			tbox.borderStyle = .bezel
-			tbox.frame = CGRect(x: 100, y: 100, width: 100, height: 100)
-			self.target.view.addSubview(tbox)
-			self.target.view.bringSubviewToFront(tbox)
-		}
+	func getCallCapabilitiesUpdateForCall(_ arg2: CInt, _ arg3: CInt) -> CInt {
+		let ret = orig.getCallCapabilitiesUpdateForCall(arg2, arg3)
+		NSLog("TTYL: Telephony")
+		return ret
 	}
 }

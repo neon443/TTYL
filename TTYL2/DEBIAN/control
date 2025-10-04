@@ -1,0 +1,9 @@
+Package: com.neon443.ttyl
+Name: TTYL
+Version: 0.0.1
+Architecture: iphoneos-arm
+Description: An awesome Orion tweak!
+Maintainer: neon443
+Author: neon443
+Section: Tweaks
+Depends: ${ORION}, firmware (>= 12.2) | ${LIBSWIFT}, Cephei

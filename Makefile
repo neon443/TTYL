@@ -11,3 +11,5 @@ TTYL_SWIFTFLAGS = -ISources/TTYLC/include
 TTYL_CFLAGS = -fobjc-arc -ISources/TTYLC/include
 
 include $(THEOS_MAKE_PATH)/tweak.mk
+SUBPROJECTS += TTYL2
+include $(THEOS_MAKE_PATH)/aggregate.mk
